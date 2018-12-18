@@ -24,9 +24,9 @@
       }
 
       .error, .success {
-        -webkit-box-shadow: 5px 5px 10px 5px rgba(90,90,90,0.5);
-        -moz-box-shadow: 5px 5px 10px 5px rgba(90,90,90,0.5);
-        box-shadow: 5px 5px 10px 5px rgba(90,90,90,0.5);
+        -webkit-box-shadow: 5px 5px 10px 5px rgba(90, 90, 90, 0.5);
+        -moz-box-shadow: 5px 5px 10px 5px rgba(90, 90, 90, 0.5);
+        box-shadow: 5px 5px 10px 5px rgba(90, 90, 90, 0.5);
       }
 
       .error {
@@ -44,34 +44,49 @@
     <script type="text/javascript">
 
       function setMessage(type, message) {
+        var secs = 3;
         var div = document.getElementById('message');
-        div.innerHTML = "<p>"+message + "</p><p>Showing this for 2 secs...</p>";
+        div.innerHTML = "<p>" + message + "</p><p>Showing this for " + secs + " secs...</p>";
         div.className = type;
         setTimeout(function () {
           div.innerHTML = "";
           div.className = "";
-        }, 2000);
+        }, secs * 1000);
       }
 
       function setBackground(color) {
         var backgroundColor = tinycolor(color);
-        console.warn(backgroundColor, backgroundColor.isValid());
         if (!backgroundColor.isValid()) {
           setMessage('error', color + ' is not a valid color.... defaulting to white');
         } else {
           document.body.style.backgroundColor = backgroundColor.toString();
-          setMessage('success', 'Background color set to ' + color);
+          setMessage('success', 'Background color set to ' + backgroundColor.toString());
         }
       }
 
-      function getBackgroundColorFromUrl() {
+      function getUrl() {
         var url_string = window.location.href;
-        var url = new URL(url_string);
+        return new URL(url_string);
+      }
+
+      function getBackgroundColorFromUrl() {
+        var url = getUrl();
         return url.searchParams.get('color');
+      }
+
+      function getGridFromUrl() {
+        var url = getUrl();
+        var grid = url.searchParams.get('grid');
+        return !!grid;
       }
 
       function getAndSetBackgroundColor() {
         var color = getBackgroundColorFromUrl();
+        var grid = getGridFromUrl();
+
+        if(grid) {
+          document.body.style.backgroundImage = "url('grid.png')";
+        }
 
         if (!color) {
           setMessage('error', 'No color selected.... defaulting to white');
